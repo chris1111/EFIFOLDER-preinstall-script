@@ -28,6 +28,18 @@ else
     DEST_VOL="$3"
 fi
 
+#############################################################################
+DEST_VOL="${3}"
+if [[ $(mount | awk '$3 == "/Volumes/EFI" {print $3}') != "" ]]; then
+ hdiutil Unmount "/Volumes/EFI"
+fi
+
+if [[ $(mount | awk '$3 == "/Volumes/ESP" {print $3}') != "" ]]; then
+ hdiutil Unmount "/Volumes/ESP"
+fi
+
+Sleep 1
+
 EFI_ROOT_DIR="${DEST_VOL}"/EFIROOTDIR
 CLOVER_INSTALLER_PLIST_NEW="${DEST_VOL}@CLOVER_INSTALLER_PLIST_NEW@"
 install_log="${DEST_VOL}/Clover_Install_Log.txt"
@@ -201,8 +213,13 @@ if [[ -d  "${EFI_ROOT_DIR}/EFI/CLOVER/drivers64UEFI" && \
 fi
 
 # issue 117, even if the fault lies with some other program that uses these files
-rm -f "${EFI_ROOT_DIR}"/EFI/BOOT/BOOTX64.efi
-rm -f "${EFI_ROOT_DIR}"/EFI/CLOVER/CLOVERX64.efi
+rm -rf "${EFI_ROOT_DIR}"/EFI/BOOT/BOOTX64.efi
+rm -rf "${EFI_ROOT_DIR}"/EFI/CLOVER/CLOVERX64.efi
 
-# Remove old CloverEFI files
+# Remove old CloverEFI drivers files
+rm -rf "${EFI_ROOT_DIR}"/EFI/CLOVER/drivers/BIOS/*.efi
+rm -rf "${EFI_ROOT_DIR}"/EFI/CLOVER/drivers/UEFI/*.efi
+rm -rf "${EFI_ROOT_DIR}"/EFI/CLOVER/drivers/off
+
+# Remove old CloverEFI files 
 #rm -fv "$EFI_ROOT_DIR"/boot{3,6,7}
