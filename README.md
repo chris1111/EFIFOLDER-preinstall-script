@@ -1,0 +1,2 @@
+# EFIFOLDER-preinstall script
+ 
